@@ -23,6 +23,11 @@ func CreateInterestRateObj(end_of_month string,banks_fixed_deposits_3m float64,b
 	return InterestRate{end_of_month,banks_fixed_deposits_3m,banks_fixed_deposits_6m,banks_fixed_deposits_12m,banks_savings_deposits,fc_fixed_deposits_3m,fc_fixed_deposits_6m,fc_fixed_deposits_12m,fc_savings_deposits}
 }
 
+//A Struct Function to find Average Interest Rate across both banks and financial companies
+func (ir *InterestRate) AvgInterestRate() float64{
+	return (ir.banks_fixed_deposits_3m+ir.banks_fixed_deposits_6m+ir.banks_fixed_deposits_12m+ir.banks_savings_deposits+ir.fc_fixed_deposits_3m+ir.fc_fixed_deposits_6m+ir.fc_fixed_deposits_12m+ir.fc_savings_deposits)/8;
+}
+
 //A Struct function to find Bank Average Interest Rate for the month
 func (ir *InterestRate) AvgBankInterestRate() float64{
 	return (ir.banks_fixed_deposits_3m+ir.banks_fixed_deposits_6m+ir.banks_fixed_deposits_12m+ir.banks_savings_deposits)/4;
@@ -35,5 +40,14 @@ func (ir *InterestRate) AvgFCInterestRate() float64{
 
 //A Struct function to whether Bank or FC Average Interest Rate is higher for the month (Return Margin higher too)
 func (ir *InterestRate) GetHigherInterestRate() (string,float64){
-	return "",0;
+	bankInterestRate := ir.AvgBankInterestRate()
+	fcInterestRate := ir.AvgFCInterestRate()
+
+	if bankInterestRate > fcInterestRate {
+		return "bank",(bankInterestRate-fcInterestRate)
+	}else if fcInterestRate > bankInterestRate {
+		return "fc",(fcInterestRate-bankInterestRate)	
+	}
+	//This will only return if the interest is the same
+	return "same",0;
 }

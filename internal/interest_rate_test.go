@@ -17,6 +17,13 @@ func TestInterestRateObject(t *testing.T) {
 	assert.Equal(t, interestRateObj.banks_savings_deposits, 6.50, "Bank Savings Deposits should be equal.")
 }
 
+func TestAverageInterestRate(t *testing.T) {
+	//Create Interest Rate Object
+	interestRateObj :=  CreateInterestRateObj("1983-01",6.75,6.80,7.13,6.50,7.15,7.30,7.70,7.21);
+
+	assert.Equal(t, interestRateObj.AvgInterestRate(), (6.75+6.80+7.13+6.50+7.15+7.30+7.70+7.21)/8, "This should return the interest rate avg.")
+}
+
 func TestAverageBankInterestRate(t *testing.T) {
 	//Create Interest Rate Object
 	interestRateObj :=  CreateInterestRateObj("1983-01",6.75,6.80,7.13,6.50,7.15,7.30,7.70,7.21);
@@ -35,8 +42,9 @@ func TestWhichInterestRateIsHigher(t *testing.T) {
 	//Create Interest Rate Object
 	interestRateObj :=  CreateInterestRateObj("1983-01",6.75,6.80,7.13,6.50,7.15,7.30,7.70,7.21);
 	//Return if bank or FC is higher with its interest margin
-	bankOrFCStr,_ := interestRateObj.GetHigherInterestRate()
+	bankOrFCStr,margin := interestRateObj.GetHigherInterestRate()
 	//Assert Value
-	assert.Equal(t, bankOrFCStr,"","This should be Financial Companies")
+	assert.Equal(t, bankOrFCStr,"fc","This should be Financial Companies")
+	assert.Equal(t, margin,0.5449999999999999,"This is the difference between FC and Bank")
 
 }
