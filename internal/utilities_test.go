@@ -42,9 +42,9 @@ func TestStrToDateStrUtil(t *testing.T) {
 }
 
 func TestResultDateStrToDisplayFormat(t *testing.T){
-	otherFormat := ConvertResultDateStrForDisplay("1983-01")
+	otherFormat := ConvertResultDateStrForDisplay("1983-02")
 	//This is a valid display format
-	assert.Equal(t, otherFormat, "Jan-1983", "This is a correct display format.")
+	assert.Equal(t, otherFormat, "Feb-1983", "This is a correct display format.")
 
 }
 
@@ -53,4 +53,8 @@ func TestToDateIsNotBeforeFromDate(t *testing.T) {
 	assert.Equal(t, TestFromAndToDateValidity("MAR-2018","Jan-2017"), false, "This is an invalid from and to date.")
 
 	assert.Equal(t, TestFromAndToDateValidity("Dec-2016","Jan-2017"), true, "This is a valid from and to date.")
+}
+
+func TestReplyTextMethod(t *testing.T) {
+	assert.Equal(t, GetRepliesText(1), "Both of your date values are incorrect.\nThis is an example of a correct input (Jan-2017)", "This is a text reply")
 }

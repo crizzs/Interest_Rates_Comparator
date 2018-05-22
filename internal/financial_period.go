@@ -100,6 +100,21 @@ func InitiatizeFinancialPeriod(fromStr string,toStr string) FinancialPeriod{
 	
 	return FinancialPeriod{make([]InterestRate, 0)}
 }
+//This function is to visualise every month on a plain sheet
+func (fp *FinancialPeriod) VisualiseData() string{
+	var str = "Date | Banks Interest Rate (Normalised) | FCs Interest Rate (Normalised) | Overall Rate (Normalised)|"
+
+	if len(fp.interestRateArr) == 0 {
+		return str +"\n\n"+ GetRepliesText(6)
+	}
+
+	for i:=0;i<len(fp.interestRateArr);i++{
+		var eachIRObj = fp.interestRateArr[i]
+		str += "\n" + eachIRObj.GetDisplay()
+	}
+
+	return str
+}
 //This function will collated the results of all months with higher FC IR
 func (fp *FinancialPeriod) MonthsWithFCHigherThanBanksIR() []InterestRate{
 	var collatedInterestRate []InterestRate;
@@ -139,6 +154,11 @@ func (fp *FinancialPeriod) RetrieveAvgOfBankAndFCRatesForPeriod() (float64,float
 			fcTotal = fcTotal + eachIRObj.AvgFCInterestRate()
 		}
 	}
+
+	if count ==0 {
+		return -9999.99,-9999.99
+	}
+
 	return (bankTotal/float64(count)),(fcTotal/float64(count))
 }
 
@@ -148,7 +168,7 @@ func (fp *FinancialPeriod) RetrieveIRTrendForPeriod() string{
 	var startAndEndObj []InterestRate;
 
 	if len(fp.interestRateArr) == 1 || len(fp.interestRateArr) == 0{
-		return "Not able to tell the trending of interest rates during this period."
+		return GetRepliesText(8)
 	}
 
 	findFirstValidObj := 0
@@ -192,7 +212,7 @@ func (fp *FinancialPeriod) RetrieveIRTrendForPeriod() string{
 		}
 	}
 
-	return "Not able to tell the trending of interest rates during this period."
+	return GetRepliesText(8)
 
 }
 

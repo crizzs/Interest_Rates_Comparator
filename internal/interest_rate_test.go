@@ -60,5 +60,5 @@ func TestInterestRateObjValidity(t *testing.T){
 
 func TestDisplay(t *testing.T){
 	interestRateObj :=  CreateInterestRateObj("1983-01",6.75,6.80,7.13,6.50,7.15,7.30,7.70,7.21);
-	assert.Equal(t, interestRateObj.GetDisplay(),"Date :Jan-1983\nAvg Interest Rates (Banks & FCs) : 7.0675 percent\nAvg Bank Interest Rates : 6.795 percent\nAvg FC Interest Rates : 7.34 percent\n","This is the display for the struct.")
+	assert.Equal(t, interestRateObj.GetDisplay(),"Jan-1983|6.795 percent|7.34 percent|7.0675 percent|","This is the display for the struct.")
 }

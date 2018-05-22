@@ -61,10 +61,14 @@ func (ir *InterestRate) CheckInterestRateValidity() bool{
 
 //Generates a string for display
 func (ir *InterestRate) GetDisplay() string{
+	if ir.CheckInterestRateValidity() == false{
+		return ConvertResultDateStrForDisplay(ir.end_of_month)+"| Not Available | Not Available | Not Available|"
+	}
+
 	avgIR := ir.AvgInterestRate()
 	avgBankIR := ir.AvgBankInterestRate()
 	avgFCIR := ir.AvgFCInterestRate()
-	return "Date :"+ConvertResultDateStrForDisplay(ir.end_of_month)+"\nAvg Interest Rates (Banks & FCs) : " + FloatToStr(avgIR) +" percent\nAvg Bank Interest Rates : "+ FloatToStr(avgBankIR) +" percent\nAvg FC Interest Rates : " + FloatToStr(avgFCIR) + " percent\n"
+	return ConvertResultDateStrForDisplay(ir.end_of_month)+"|" + FloatToStr(avgBankIR) +" percent|" + FloatToStr(avgFCIR) + " percent|" + FloatToStr(avgIR) +" percent|"
 }
 
 
