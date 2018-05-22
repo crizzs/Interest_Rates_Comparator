@@ -1,4 +1,4 @@
-package masapi
+package main
 /***************
 Test Business
 Logic and Display
@@ -8,7 +8,6 @@ Rate Module
 import (
 	assert "github.com/stretchr/testify/assert"
 	"testing"
-	//"fmt"
 )
 
 func TestCreateFinancialPeriod(t *testing.T) {

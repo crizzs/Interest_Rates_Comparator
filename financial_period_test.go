@@ -1,4 +1,4 @@
-package masapi
+package main
 /***************
 Test Financial
 Period Class
