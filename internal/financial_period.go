@@ -4,9 +4,9 @@ import(
 	"time"
 	"net/http"
 	"crypto/tls"
-	"fmt"
 	"io/ioutil"
 	"bytes"
+	"encoding/json"
 )
 /***************
 Created Model 
@@ -44,37 +44,155 @@ type InterestRatesResult struct {
 
 //This is the URL to call MAS's interest rate API (Set Max Limit to 1000)
 var URL = "https://eservices.mas.gov.sg/api/action/datastore/search.json?resource_id=5f2b18a8-0883-4769-a635-879c63d3caac&limit=1000"
-
+//Http transport settings
 var tr = &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true} ,
 			TLSHandshakeTimeout: 2 * time.Second,
 		}
-
+//This function energizes the financial period object
 func InitiatizeFinancialPeriod(fromStr string,toStr string) FinancialPeriod{
+
+	if fromStr == "" && toStr == "" {
+		return FinancialPeriod{make([]InterestRate, 0)}
+	}
+
 	//Don't have to set the offset because the 100 rows limit is not observed by MAS
 	concatURL := URL + "&between[end_of_month]=" +fromStr+ "," + toStr
 
 	client := &http.Client{Transport: tr,}
 	var query = []byte(``)
 
-	//Retrieve Result from MAS (Initial Result)
+	//Retrieve Result from MAS
 	req, err := http.NewRequest("GET", concatURL ,bytes.NewBuffer(query))
 	if err != nil {
-		fmt.Printf("A connection error to MAS API has occured!");
+		//If error is encountered, returns empty object
+		return FinancialPeriod{make([]InterestRate, 0)}
 	}
-	resp, err := client.Do(req)
+	//Request for data from MAS API
+	resp, respErr := client.Do(req)
+	if respErr != nil {
+		//If error is encountered, returns empty object
+		return FinancialPeriod{make([]InterestRate, 0)}
+	}
+
 	masResult, _ := ioutil.ReadAll(resp.Body)
 
+	//Unmarshal the results into struct
+	var interestRatesResult InterestRatesResult;
 
-	return FinancialPeriod{}
-}
-/* This check should go up one level
+	json.Unmarshal([]byte(masResult), &interestRatesResult)
 
-func ConvertStrToTime(dateStr string) time.Time{
-	date ,err := time.Parse("Jan-2006",dateStr)
-	if err != nil {
-		return _
+	defer resp.Body.Close()
+
+	total := StrToInt(interestRatesResult.Result.Total)
+	
+	//Initialize the Financial Period
+	finResultPeriod := FinancialPeriod{make([]InterestRate,total)}
+
+	for i := 0; i < total; i++{
+		var eachRecord = interestRatesResult.Result.Records[i]
+		finResultPeriod.interestRateArr[i] = CreateInterestRateObj(eachRecord.EndOfMonth,StrToFloat(eachRecord.BanksFixedDeposits3M),StrToFloat(eachRecord.BanksFixedDeposits6M),StrToFloat(eachRecord.BanksFixedDeposits12M),StrToFloat(eachRecord.BanksSavingsDeposits),StrToFloat(eachRecord.FcFixedDeposits3M),StrToFloat(eachRecord.FcFixedDeposits6M),StrToFloat(eachRecord.FcFixedDeposits12M),StrToFloat(eachRecord.FcSavingsDeposits))
+		//Return the financial period retrieved
+		if i == (total-1){
+			return finResultPeriod
+		}
 	}
-	return date
+	
+	return FinancialPeriod{make([]InterestRate, 0)}
 }
-*/
+//This function will collated the results of all months with higher FC IR
+func (fp *FinancialPeriod) MonthsWithFCHigherThanBanksIR() []InterestRate{
+	var collatedInterestRate []InterestRate;
+
+	for i := 0; i<len(fp.interestRateArr);i++{
+		var eachIRObj = fp.interestRateArr[i]
+
+		objValidity := eachIRObj.CheckInterestRateValidity()
+
+		if objValidity {
+			result,_:= eachIRObj.GetHigherInterestRate()
+			
+			//If result is fc, we will place it inside the slice
+			if result == "fc" {
+				collatedInterestRate = append(collatedInterestRate,eachIRObj)
+			}
+		}
+	}
+	return collatedInterestRate
+}
+//This function returns the average for banks and FCs interest rate
+func (fp *FinancialPeriod) RetrieveAvgOfBankAndFCRatesForPeriod() (float64,float64){
+	var bankTotal = 0.0
+	var fcTotal = 0.0
+	//Counts the amount of valid records
+	count := 0
+
+	for i := 0; i<len(fp.interestRateArr);i++{
+		var eachIRObj =  fp.interestRateArr[i]
+
+		objValidity := eachIRObj.CheckInterestRateValidity()
+		//Ensures a fair comparison (Will not compare in months which either Banks or FCs rates are having null values)
+
+		if objValidity {
+			count++
+			bankTotal = bankTotal + eachIRObj.AvgBankInterestRate()
+			fcTotal = fcTotal + eachIRObj.AvgFCInterestRate()
+		}
+	}
+	return (bankTotal/float64(count)),(fcTotal/float64(count))
+}
+
+//This function will tell whether the interest rate in this period is in the downtrend or uptrend
+//Data provided by MAS is already sorted by date
+func (fp *FinancialPeriod) RetrieveIRTrendForPeriod() string{
+	var startAndEndObj []InterestRate;
+
+	if len(fp.interestRateArr) == 1 || len(fp.interestRateArr) == 0{
+		return "Not able to tell the trending of interest rates during this period."
+	}
+
+	findFirstValidObj := 0
+	findLastValidObj := len(fp.interestRateArr)-1
+	//Search from the front (Will never take last obj)
+	for findFirstValidObj < len(fp.interestRateArr)-1 {
+
+		var eachIRObj =  fp.interestRateArr[findFirstValidObj]
+		objValidity := eachIRObj.CheckInterestRateValidity()
+
+		if objValidity {
+			startAndEndObj = append(startAndEndObj,eachIRObj)
+			break
+		}
+		findFirstValidObj++
+	}
+	//Search from the back(Will nevr take first Obj)
+	for findLastValidObj > 0 {
+		var eachIRObj =  fp.interestRateArr[findLastValidObj]
+		objValidity := eachIRObj.CheckInterestRateValidity()
+
+		if objValidity {
+			startAndEndObj = append(startAndEndObj,eachIRObj)
+			break
+		}
+		findLastValidObj--
+	}
+	//This is when result returned is valid for trending of this period
+	if len(startAndEndObj) == 2 {
+		startOfPeriod := startAndEndObj[0]
+		endOfPeriod := startAndEndObj[1]
+
+		positiveOrNegativeInterestRate := endOfPeriod.AvgInterestRate() - startOfPeriod.AvgInterestRate()
+
+		if positiveOrNegativeInterestRate > 0 {
+			return "UpTrend"
+		}else if positiveOrNegativeInterestRate < 0 {
+			return "DownTrend"
+		}else if positiveOrNegativeInterestRate == 0{
+			return "Steady"
+		}
+	}
+
+	return "Not able to tell the trending of interest rates during this period."
+
+}
+

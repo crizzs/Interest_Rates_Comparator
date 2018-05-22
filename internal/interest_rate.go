@@ -51,3 +51,20 @@ func (ir *InterestRate) GetHigherInterestRate() (string,float64){
 	//This will only return if the interest is the same
 	return "same",0;
 }
+//Check if this result is a valid piece of Interest Rate obj
+func (ir *InterestRate) CheckInterestRateValidity() bool{
+	if ir.banks_fixed_deposits_3m== -9999.99 || ir.banks_fixed_deposits_6m== -9999.99 || ir.banks_fixed_deposits_12m== -9999.99 || ir.banks_savings_deposits== -9999.99 || ir.fc_savings_deposits== -9999.99 || ir.fc_fixed_deposits_3m== -9999.99 || ir.fc_fixed_deposits_6m == -9999.99|| ir.fc_fixed_deposits_12m== -9999.99 {
+		return false;
+	}
+	return true;
+}
+
+//Generates a string for display
+func (ir *InterestRate) GetDisplay() string{
+	avgIR := ir.AvgInterestRate()
+	avgBankIR := ir.AvgBankInterestRate()
+	avgFCIR := ir.AvgFCInterestRate()
+	return "Date :"+ConvertResultDateStrForDisplay(ir.end_of_month)+"\nAvg Interest Rates (Banks & FCs) : " + FloatToStr(avgIR) +" percent\nAvg Bank Interest Rates : "+ FloatToStr(avgBankIR) +" percent\nAvg FC Interest Rates : " + FloatToStr(avgFCIR) + " percent\n"
+}
+
+

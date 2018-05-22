@@ -48,3 +48,17 @@ func TestWhichInterestRateIsHigher(t *testing.T) {
 	assert.Equal(t, margin,0.5449999999999999,"This is the difference between FC and Bank")
 
 }
+
+func TestInterestRateObjValidity(t *testing.T){
+	interestRateObj :=  CreateInterestRateObj("1983-01",6.75,6.80,7.13,6.50,7.15,7.30,7.70,7.21);
+	invalidInterestRateObj :=  CreateInterestRateObj("1983-01",6.75,6.80,7.13,6.50,7.15,7.30,-9999.99,7.21);
+
+	assert.Equal(t, interestRateObj.CheckInterestRateValidity(),true,"Should be valid")
+	assert.Equal(t, invalidInterestRateObj.CheckInterestRateValidity(),false,"Should be valid")
+
+}
+
+func TestDisplay(t *testing.T){
+	interestRateObj :=  CreateInterestRateObj("1983-01",6.75,6.80,7.13,6.50,7.15,7.30,7.70,7.21);
+	assert.Equal(t, interestRateObj.GetDisplay(),"Date :Jan-1983\nAvg Interest Rates (Banks & FCs) : 7.0675 percent\nAvg Bank Interest Rates : 6.795 percent\nAvg FC Interest Rates : 7.34 percent\n","This is the display for the struct.")
+}
