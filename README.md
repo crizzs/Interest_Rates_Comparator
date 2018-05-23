@@ -19,8 +19,7 @@ This app is designed in consideration of `Single Responsibility Principle`, `Cod
 
 ## Requirements
 
-- [Golang 1.9 & Up](https://golang.org/)
-- [Golang 1.5 and Below - Requires GCC-toolchain for Cross-Complier](https://golang.org/)
+- [Golang 1.9 & Up](https://golang.org/) or [Golang 1.5 and Below - Requires GCC-toolchain for Cross-Complier](https://golang.org/)
 - [TDD Assertion dependency](https://github.com/stretchr/testify)
 
 ## Installation
@@ -32,8 +31,8 @@ This app is designed in consideration of `Single Responsibility Principle`, `Cod
 2. Go into your Golang Workspace and search for the `Interest_Rates_Comparator` folder
 
     Part 1: Open your command prompt or terminal   
-     
-    Part 2: Navigate into the folder using the  command 
+
+    Part 2: Navigate into the folder using the `cd` command 
     
 3. Use Makefile to download deps, test and build your executable(s). Type `make` into your terminal.
 4. Executable will be created. This file is named `main` 
