@@ -1,15 +1,14 @@
 package main
 /*
 This is the main
-package for Interest
+method for Interest
 Rates Comparator
 */
-import (
-	"fmt"
+import(
+	masapi "github.com/crizzs/Interest_Rates_Comparator/internal/masapi"
 )
 
 func main(){
 	//Activate Interactive Command Line Terminal
-	//ActivateInteractiveCommandTerminal()
-	fmt.Print(GetRepliesText(0))
+	masapi.ActivateInteractiveCommandTerminal()
 }

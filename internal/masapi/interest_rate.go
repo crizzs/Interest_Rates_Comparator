@@ -1,4 +1,4 @@
-package main
+package masapi
 
 /***************
 Created Model 
@@ -59,7 +59,7 @@ func (ir *InterestRate) CheckInterestRateValidity() bool{
 	return true;
 }
 
-//Generates a string for display
+//Generates a string for display (Avg Bank/FCs/Overall)
 func (ir *InterestRate) GetDisplay() string{
 	if ir.CheckInterestRateValidity() == false{
 		return ConvertResultDateStrForDisplay(ir.end_of_month)+"| Not Available | Not Available | Not Available|"
@@ -69,6 +69,15 @@ func (ir *InterestRate) GetDisplay() string{
 	avgBankIR := ir.AvgBankInterestRate()
 	avgFCIR := ir.AvgFCInterestRate()
 	return ConvertResultDateStrForDisplay(ir.end_of_month)+"|" + FloatToStr(avgBankIR) +" percent|" + FloatToStr(avgFCIR) + " percent|" + FloatToStr(avgIR) +" percent|"
+}
+
+//Generates a string for all display (General)
+func (ir *InterestRate) GetAllDisplay() string{
+	if ir.CheckInterestRateValidity() == false{
+		return ConvertResultDateStrForDisplay(ir.end_of_month)+"| Not Available | Not Available | Not Available| Not Available | Not Available | Not Available | Not Available | Not Available |"
+	}
+
+	return ConvertResultDateStrForDisplay(ir.end_of_month)+"|" + FloatToStr(ir.banks_fixed_deposits_3m) +" percent|" + FloatToStr(ir.banks_fixed_deposits_6m) + " percent|" + FloatToStr(ir.banks_fixed_deposits_12m) +" percent|" +FloatToStr(ir.fc_fixed_deposits_3m)+" percent|"+FloatToStr(ir.fc_fixed_deposits_6m)+" percent|"+FloatToStr(ir.fc_fixed_deposits_12m)+" percent|"+FloatToStr(ir.fc_savings_deposits)+" percent|"
 }
 
 

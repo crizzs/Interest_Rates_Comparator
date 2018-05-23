@@ -1,4 +1,4 @@
-package main
+package masapi
 
 import(
 	"strconv"
@@ -6,7 +6,7 @@ import(
 )
 /*
 This contains utilites of
-masapi package
+main package
 */
 var listOfReplies = map[int]string{
 									1: "Both of your date values are incorrect.\nThis is an example of a correct input (Jan-2017)",
@@ -19,7 +19,8 @@ var listOfReplies = map[int]string{
 									8: "Not able to tell the trending of interest rates during this period.",
 									9: "The interest rates are trending UP during the defined financial period.",
 									10: "The interest rates are trending DOWN during the defined financial period.",
-									11: "The interest rates are holding STEADY during the defined financial period."}
+									11: "The interest rates are holding STEADY during the defined financial period.",
+									12: "Your Input is not part of the selection. Please try again!"}
 
 func StrToFloat(str string) float64{
 	s, err := strconv.ParseFloat(str, 64)

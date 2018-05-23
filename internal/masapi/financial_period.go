@@ -1,4 +1,4 @@
-package main
+package masapi
 
 import(
 	"time"
@@ -102,7 +102,7 @@ func InitiatizeFinancialPeriod(fromStr string,toStr string) FinancialPeriod{
 }
 //This function is to visualise every month on a plain sheet
 func (fp *FinancialPeriod) VisualiseData() string{
-	var str = "Date | Banks Interest Rate (Normalised) | FCs Interest Rate (Normalised) | Overall Rate (Normalised)|"
+	var str = "Date | Bank FD 3m | Bank FD 6m | Bank FD 12m | Bank Savings Deposits | FC FD 3m | FC FD 6m | FC FD 12m | FC Savings Deposits |"
 
 	if len(fp.interestRateArr) == 0 {
 		return str +"\n\n"+ GetRepliesText(6)
@@ -110,7 +110,7 @@ func (fp *FinancialPeriod) VisualiseData() string{
 
 	for i:=0;i<len(fp.interestRateArr);i++{
 		var eachIRObj = fp.interestRateArr[i]
-		str += "\n" + eachIRObj.GetDisplay()
+		str += "\n" + eachIRObj.GetAllDisplay()
 	}
 
 	return str
@@ -215,4 +215,6 @@ func (fp *FinancialPeriod) RetrieveIRTrendForPeriod() string{
 	return GetRepliesText(8)
 
 }
+
+
 
