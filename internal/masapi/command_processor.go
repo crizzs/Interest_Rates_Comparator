@@ -22,7 +22,7 @@ func ActivateInteractiveCommandTerminal(){
 	for commandReader.Scan() {
 		var commandRetrieved = commandReader.Text()
 		
-		if collectedBothDates != false && commandRetrieved != "1" && commandRetrieved != "6"{
+		if collectedBothDates != false && commandRetrieved != "1" && commandRetrieved != "6" && commandRetrieved != "2" && commandRetrieved != "3" && commandRetrieved != "4" && commandRetrieved != "5"{
 			fmt.Print("\nBelow are the list of selections available (1 to 6)\n1. Change the Financial Period (Both Dates)\n2. Display Interest Rates for Financial Period\n3. Display months which Finance Companies offered best Interest Rates\n4. Show Averaged Interest Rates Across the entire Financial Period\n5. Tell Trend of Interest Rates During this period\n6. Exit the Application")
 			fmt.Print("\n\nEnter (1 to 6):")
 		}

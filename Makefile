@@ -7,7 +7,7 @@ GOGET=$(GOCMD) get
 BINARY_NAME=main
 BINARY_UNIX=$(BINARY_NAME)_unix
 
-all: test build
+all: deps test build
 build:
 	$(GOBUILD) -o $(BINARY_NAME) -v
 test:
