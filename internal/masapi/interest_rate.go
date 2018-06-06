@@ -77,7 +77,7 @@ func (ir *InterestRate) GetAllDisplay() string{
 		return ConvertResultDateStrForDisplay(ir.end_of_month)+"| Not Available | Not Available | Not Available| Not Available | Not Available | Not Available | Not Available | Not Available |"
 	}
 
-	return ConvertResultDateStrForDisplay(ir.end_of_month)+"|" + FloatToStr(ir.banks_fixed_deposits_3m) +" percent|" + FloatToStr(ir.banks_fixed_deposits_6m) + " percent|" + FloatToStr(ir.banks_fixed_deposits_12m) +" percent|" +FloatToStr(ir.fc_fixed_deposits_3m)+" percent|"+FloatToStr(ir.fc_fixed_deposits_6m)+" percent|"+FloatToStr(ir.fc_fixed_deposits_12m)+" percent|"+FloatToStr(ir.fc_savings_deposits)+" percent|"
+	return ConvertResultDateStrForDisplay(ir.end_of_month)+"|" + FloatToStr(ir.banks_fixed_deposits_3m) +" percent|" + FloatToStr(ir.banks_fixed_deposits_6m) + " percent|" + FloatToStr(ir.banks_fixed_deposits_12m) +" percent|" +FloatToStr(ir.banks_savings_deposits)+" percent|"+FloatToStr(ir.fc_fixed_deposits_3m)+" percent|"+FloatToStr(ir.fc_fixed_deposits_6m)+" percent|"+FloatToStr(ir.fc_fixed_deposits_12m)+" percent|"+FloatToStr(ir.fc_savings_deposits)+" percent|"
 }
 
 
